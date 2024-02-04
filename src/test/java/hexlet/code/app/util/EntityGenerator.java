@@ -1,5 +1,6 @@
 package hexlet.code.app.util;
 
+import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.User;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
@@ -22,6 +23,16 @@ public class EntityGenerator {
                 .supply(Select.field(User::getPasswordDigest), () -> faker.internet().password(3, 16))
                 .ignore(Select.field(User::getUpdatedAt))
                 .ignore(Select.field(User::getCreatedAt))
+                .create();
+    }
+
+    @Bean
+    public TaskStatus generateTaskStatus() {
+        return Instancio.of(TaskStatus.class)
+                .ignore(Select.field(TaskStatus::getId))
+                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug())
+                .ignore(Select.field(TaskStatus::getCreatedAt))
                 .create();
     }
 }
