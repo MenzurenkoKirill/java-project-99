@@ -1,7 +1,9 @@
 package hexlet.code.app.component;
 
+import hexlet.code.app.model.Label;
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.User;
+import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.service.CustomUserDetailsService;
@@ -26,6 +28,9 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired
     private final TaskStatusRepository taskStatusRepository;
 
+    @Autowired
+    private final LabelRepository labelRepository;
+
     private static final List<TaskStatus> STATUSES = List.of(
             getTaskStatus("Draft", "draft"),
             getTaskStatus("To review", "to_review"),
@@ -33,6 +38,9 @@ public class DataInitializer implements ApplicationRunner {
             getTaskStatus("To publish", "to_publish"),
             getTaskStatus("Published", "published"));
 
+    private static final List<Label> LABELS = List.of(
+            getLabel("feature"),
+            getLabel("bug"));
 
     @Override
     public void run(ApplicationArguments args) {
@@ -42,6 +50,11 @@ public class DataInitializer implements ApplicationRunner {
         for (var status : STATUSES) {
             if (taskStatusRepository.findBySlug(status.getSlug()).isEmpty()) {
                 taskStatusRepository.save(status);
+            }
+        }
+        for (var label : LABELS) {
+            if (labelRepository.findByName(label.getName()).isEmpty()) {
+                labelRepository.save(label);
             }
         }
     }
@@ -58,5 +71,9 @@ public class DataInitializer implements ApplicationRunner {
         taskStatus.setSlug(slug);
         return taskStatus;
     }
-
+    public static Label getLabel(String name) {
+        var label = new Label();
+        label.setName(name);
+        return label;
+    }
 }
