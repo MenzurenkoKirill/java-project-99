@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.dto.tasks.TaskCreateDTO;
 import hexlet.code.app.dto.tasks.TaskUpdateDTO;
 import hexlet.code.app.model.Task;
+import hexlet.code.app.model.Label;
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.User;
+import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
@@ -50,6 +52,8 @@ public class TaskControllerTest {
     private TaskStatusRepository taskStatusRepository;
 
     @Autowired
+    private LabelRepository labelRepository;
+    @Autowired
     private TaskRepository taskRepository;
 
     @Autowired
@@ -58,6 +62,8 @@ public class TaskControllerTest {
     private User testUser;
 
     private TaskStatus testTaskStatus;
+
+    private Label testLabel;
 
     private Task testTask;
 
@@ -69,17 +75,21 @@ public class TaskControllerTest {
         userRepository.save(testUser);
         testTaskStatus = entityGenerator.generateTaskStatus();
         taskStatusRepository.save(testTaskStatus);
+        testLabel = entityGenerator.generateLabel();
+        labelRepository.save(testLabel);
         testTask = entityGenerator.generateTask();
         testTask.setAssignee(testUser);
         testTask.setTaskStatus(testTaskStatus);
+        testTask.setLabels(Set.of(testLabel));
         taskRepository.save(testTask);
-        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));;
     }
 
     @AfterEach
     public void clean() {
         taskRepository.deleteAll();
         taskStatusRepository.deleteAll();
+        labelRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -125,7 +135,8 @@ public class TaskControllerTest {
                 a -> a.node("status").isEqualTo(testTaskStatus.getSlug()),
                 a -> a.node("assignee_id").isEqualTo(testUser.getId()),
                 a -> a.node("createdAt").isEqualTo(testTask.getCreatedAt()
-                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))),
+                a -> a.node("taskLabelIds").isEqualTo(Set.of(testLabel.getId()))
         );
     }
 
@@ -135,6 +146,8 @@ public class TaskControllerTest {
         userRepository.save(newUser);
         var newTaskStatus = entityGenerator.generateTaskStatus();
         taskStatusRepository.save(newTaskStatus);
+        var newLabel = entityGenerator.generateLabel();
+        labelRepository.save(newLabel);
         var newTask = entityGenerator.generateTask();
         var data = new TaskCreateDTO();
         data.setTitle(newTask.getName());
@@ -142,6 +155,7 @@ public class TaskControllerTest {
         data.setContent(newTask.getDescription());
         data.setStatus(newTaskStatus.getSlug());
         data.setAssigneeId(newUser.getId());
+        data.setTaskLabelIds(Set.of(newLabel.getId()));
         var request = post("/api/tasks")
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -154,6 +168,7 @@ public class TaskControllerTest {
         assertThat(task.getDescription()).isEqualTo(newTask.getDescription());
         assertThat(task.getTaskStatus()).isEqualTo(newTaskStatus);
         assertThat(task.getAssignee()).isEqualTo(newUser);
+        assertThat(task.getLabels()).isEqualTo(Set.of(newLabel));
     }
 
     @Test
