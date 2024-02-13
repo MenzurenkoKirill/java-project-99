@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
 	java
 	application
@@ -5,6 +8,7 @@ plugins {
 	checkstyle
 	id("org.springframework.boot") version "3.2.2"
 	id("io.spring.dependency-management") version "1.1.4"
+	id ("io.sentry.jvm.gradle") version "4.1.0"
 }
 
 group = "hexlet.code"
@@ -14,15 +18,6 @@ java {
 	sourceCompatibility = JavaVersion.VERSION_20
 }
 
-configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
-}
-
-repositories {
-	mavenCentral()
-}
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter:3.1.0")
@@ -61,13 +56,31 @@ application {
 
 repositories {
 	mavenCentral()
+	maven { url = uri("https://repo.spring.io/milestone") }
+	maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 tasks.test {
 	useJUnitPlatform()
+	testLogging {
+		exceptionFormat = TestExceptionFormat.FULL
+		events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
+		showStandardStreams = true
+	}
 }
+
 tasks.jacocoTestReport {
 	reports {
 		xml.required = true
+	}
+}
+
+sentry {
+	val env = System.getenv("APP_ENV")
+	if (env != null && env.contentEquals("prod")) {
+		includeSourceContext = true
+		org = "hexlet-5x"
+		projectName = "java-project-99"
+		authToken = System.getenv("SENTRY_AUTH_TOKEN")
 	}
 }

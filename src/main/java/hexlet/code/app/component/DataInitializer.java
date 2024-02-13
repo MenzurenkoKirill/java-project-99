@@ -23,13 +23,13 @@ public class DataInitializer implements ApplicationRunner {
     private final UserRepository userRepository;
 
     @Autowired
-    private final CustomUserDetailsService userService;
-
-    @Autowired
     private final TaskStatusRepository taskStatusRepository;
 
     @Autowired
     private final LabelRepository labelRepository;
+
+    @Autowired
+    private final CustomUserDetailsService userService;
 
     private static final List<TaskStatus> STATUSES = List.of(
             getTaskStatus("Draft", "draft"),
@@ -65,12 +65,14 @@ public class DataInitializer implements ApplicationRunner {
         userData.setPasswordDigest("qwerty");
         return userData;
     }
+
     public static TaskStatus getTaskStatus(String name, String slug) {
         var taskStatus = new TaskStatus();
         taskStatus.setName(name);
         taskStatus.setSlug(slug);
         return taskStatus;
     }
+
     public static Label getLabel(String name) {
         var label = new Label();
         label.setName(name);

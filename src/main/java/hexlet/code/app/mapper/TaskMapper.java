@@ -3,6 +3,7 @@ package hexlet.code.app.mapper;
 import hexlet.code.app.dto.tasks.TaskCreateDTO;
 import hexlet.code.app.dto.tasks.TaskDTO;
 import hexlet.code.app.dto.tasks.TaskUpdateDTO;
+import hexlet.code.app.model.Label;
 import hexlet.code.app.model.Task;
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.repository.LabelRepository;
@@ -56,5 +57,24 @@ public abstract class TaskMapper {
     public abstract TaskDTO map(Task model);
 
     public abstract List<TaskDTO> map(List<Task> models);
+
+    @Named("slugToTaskStatus")
+    public TaskStatus slugToTaskStatus(String slug) {
+        return taskStatusRepository.findBySlug(slug).orElseThrow();
+    }
+
+    @Named("taskLabelIdsToLabels")
+    public Set<Label> taskLabelIdsToLabels(Set<Long> taskLabelIds) {
+        return taskLabelIds == null ? new HashSet<>() : taskLabelIds.stream()
+                .map(id -> labelRepository.findById(id).orElseThrow())
+                .collect(Collectors.toSet());
+    }
+
+    @Named("labelsToLabelIds")
+    public Set<Long> labelsToLabelIds(Set<Label> labels) {
+        return labels.isEmpty() ? new HashSet<>() : labels.stream()
+                .map(Label::getId)
+                .collect(Collectors.toSet());
+    }
 
 }
