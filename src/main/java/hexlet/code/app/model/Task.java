@@ -13,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString.Include;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -31,25 +32,25 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class Task implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @ToString.Include
+    @Include
     @EqualsAndHashCode.Include
     private Long id;
 
     @NotBlank
-    @ToString.Include
+    @Include
     private String name;
 
-    @ToString.Include
+    @Include
     private Integer index;
 
-    @ToString.Include
+    @Include
     private String description;
 
-    @ToString.Include
+    @Include
     @ManyToOne(fetch = FetchType.EAGER)
     private TaskStatus taskStatus;
 
-    @ToString.Include
+    @Include
     @ManyToOne(fetch = FetchType.EAGER)
     private User assignee;
 

@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString.Include;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -29,18 +30,18 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class TaskStatus implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @ToString.Include
+    @Include
     @EqualsAndHashCode.Include
     private Long id;
 
     @Size(min = 1)
     @Column(unique = true)
-    @ToString.Include
+    @Include
     private String name;
 
     @Size(min = 1)
     @Column(unique = true)
-    @ToString.Include
+    @Include
     private String slug;
 
     @CreatedDate

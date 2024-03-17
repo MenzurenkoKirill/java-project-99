@@ -13,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString.Include;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -29,19 +30,19 @@ import java.time.LocalDate;
 public class User implements BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ToString.Include
+    @Include
     @EqualsAndHashCode.Include
     private Long id;
 
-    @ToString.Include
+    @Include
     private String firstName;
 
-    @ToString.Include
+    @Include
     private String lastName;
 
     @Email
     @Column(unique = true)
-    @ToString.Include
+    @Include
     private String email;
 
     @NotBlank
