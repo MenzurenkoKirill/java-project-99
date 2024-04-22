@@ -30,18 +30,18 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class TaskStatus implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Include
+    @ToString.Include
     @EqualsAndHashCode.Include
     private Long id;
 
     @Size(min = 1)
     @Column(unique = true)
-    @Include
+    @ToString.Include
     private String name;
 
     @Size(min = 1)
     @Column(unique = true)
-    @Include
+    @ToString.Include
     private String slug;
 
     @CreatedDate

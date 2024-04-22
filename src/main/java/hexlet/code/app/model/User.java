@@ -34,19 +34,19 @@ import java.util.Collection;
 public class User implements UserDetails, BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Include
+    @ToString.Include
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Include
+    @ToString.Include
     private String firstName;
 
-    @Include
+    @ToString.Include
     private String lastName;
 
     @Email
     @Column(unique = true)
-    @Include
+    @ToString.Include
     private String email;
 
     @NotBlank

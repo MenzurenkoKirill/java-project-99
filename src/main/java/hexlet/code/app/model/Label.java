@@ -30,15 +30,13 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class Label implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Include
+    @ToString.Include
     @EqualsAndHashCode.Include
-    @NotBlank
     private Long id;
 
     @Size(min = 3, max = 1000)
     @Column(unique = true)
-    @Include
-    @NotBlank
+    @ToString.Include
     private String name;
 
     @CreatedDate

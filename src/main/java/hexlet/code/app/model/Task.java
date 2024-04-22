@@ -32,25 +32,25 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class Task implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Include
+    @ToString.Include
     @EqualsAndHashCode.Include
     private Long id;
 
     @NotBlank
-    @Include
+    @ToString.Include
     private String name;
 
-    @Include
+    @ToString.Include
     private Integer index;
 
-    @Include
+    @ToString.Include
     private String description;
 
-    @Include
+    @ToString.Include
     @ManyToOne(fetch = FetchType.EAGER)
     private TaskStatus taskStatus;
 
-    @Include
+    @ToString.Include
     @ManyToOne(fetch = FetchType.EAGER)
     private User assignee;
 
